@@ -2,7 +2,7 @@ package com.ltm150895.gdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
@@ -15,19 +15,21 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import static com.ltm150895.gdx.game.utils.Constants.PPM; // if get then *, if set then /
 
-public class GdxGame extends ApplicationAdapter {
+public class GdxGame extends ApplicationAdapter implements InputProcessor{
 
 	private boolean DEBUG = false;
 	private float gravity_y = -9.8f;
 	private float gravity_x = 0f;
+    private int horizontalforce = 0;
 
 	private Box2DDebugRenderer b2dr;
 	private OrthographicCamera camera;
 	private World world;
-	private Body player, platform;
+	public Body player, platform;
 
 	@Override
 	public void create () {
+        Gdx.input.setInputProcessor(this);
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 
@@ -39,6 +41,7 @@ public class GdxGame extends ApplicationAdapter {
 
 		player = createBox(8, 10, 16, 16, false);
 		platform = createBox(0, 0, 64, 32, true);
+
 	}
 
 	@Override
@@ -64,7 +67,6 @@ public class GdxGame extends ApplicationAdapter {
 		world.step(1 / 60f, 6, 2);
 
 		cameraUpdate(deltaTime);
-		inputUpdate(deltaTime);
 	}
 
 	private void cameraUpdate(float deltaTime){
@@ -76,23 +78,6 @@ public class GdxGame extends ApplicationAdapter {
 		camera.position.set(position);
 
 		camera.update();
-	}
-
-	private void inputUpdate(float deltaTime){
-		int horizontalforce = 0;
-
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-			horizontalforce -= 1;
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
-			horizontalforce += 1;
-		}
-
-		if(Gdx.input.isTouched()){
-			player.applyForceToCenter(0, 5, false);
-		}
-
-		player.setLinearVelocity(horizontalforce * 5 , player.getLinearVelocity().y);
 	}
 
 	private Body createBox(int x, int y, int width, int height, boolean isStatic){
@@ -119,5 +104,46 @@ public class GdxGame extends ApplicationAdapter {
 		return pbody;
 	}
 
+    //InputHandler or InputProcessor
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
 
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		player.applyForceToCenter(0, 50, false);
+        player.setLinearVelocity(horizontalforce * 5 , player.getLinearVelocity().y);
+        return true;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
+    }
 }
