@@ -66,7 +66,7 @@ public class GdxGame extends ApplicationAdapter implements InputProcessor{
         font.draw(batch, String.valueOf(Gdx.graphics.getFramesPerSecond()) + " h = " + String.valueOf(player.getPosition()) ,50, Gdx.graphics.getHeight() - 50  );
         batch.end();
 
-		b2dr.render(world,camera.combined.scl(PPM*2));
+		b2dr.render(world,camera.combined.scl(PPM));
 	}
 
 	@Override
