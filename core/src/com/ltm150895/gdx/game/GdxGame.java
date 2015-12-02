@@ -63,8 +63,11 @@ public class GdxGame extends ApplicationAdapter implements InputProcessor{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
-        font.draw(batch, String.valueOf(Gdx.graphics.getFramesPerSecond()) + " h = " + String.valueOf(player.getPosition()) ,50, Gdx.graphics.getHeight() - 50  );
+        font.draw(batch, String.valueOf(Gdx.graphics.getFramesPerSecond()) + " h = " + String.valueOf(player.getPosition() +  "floor = " + String.valueOf(platform.getPosition())) ,50, Gdx.graphics.getHeight() - 50  );
         batch.end();
+
+		if(player.getPosition().x < platform.getPosition().y)
+			platform = createBox( player.getPosition().x + Gdx.graphics.getWidth() , player.getPosition().y - 100 , Gdx.graphics.getWidth() , 32, true);
 
 		b2dr.render(world,camera.combined.scl(PPM));
 	}
@@ -98,7 +101,7 @@ public class GdxGame extends ApplicationAdapter implements InputProcessor{
 		camera.update();
 	}
 
-	private Body createBox(int x, int y, int width, int height, boolean isStatic){
+	private Body createBox(float x, float y, int width, int height, boolean isStatic){
 		Body pbody;
 		BodyDef def = new BodyDef();
 
